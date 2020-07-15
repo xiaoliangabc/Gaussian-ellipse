@@ -25,8 +25,10 @@ def plot_point_cov(points, nstd=2, ax=None, **kwargs):
     -------
         A matplotlib ellipse artist
     """
+    # 计算点的均值和协方差
     pos = points.mean(axis=0)
     cov = np.cov(points, rowvar=False)
+    # 画椭圆
     return plot_cov_ellipse(cov, pos, nstd, ax, **kwargs)
 
 def plot_cov_ellipse(cov, pos, nstd=2, ax=None, **kwargs):
@@ -53,16 +55,24 @@ def plot_cov_ellipse(cov, pos, nstd=2, ax=None, **kwargs):
         order = vals.argsort()[::-1]
         return vals[order], vecs[:,order]
 
+    # 坐标轴
     if ax is None:
         ax = plt.gca()
 
+    # 计算协方差矩阵的特征值和特征向量
     vals, vecs = eigsorted(cov)
+
+    # 计算坐标轴旋转的角度
     theta = np.degrees(np.arctan2(*vecs[:,0][::-1]))
 
+    # 计算椭圆的长轴和短轴
     # Width and height are "full" widths, not radius
     width, height = 2 * nstd * np.sqrt(vals)
+
+    # 得到椭圆
     ellip = Ellipse(xy=pos, width=width, height=height, angle=theta, **kwargs)
 
+    # 画椭圆
     ax.add_artist(ellip)
     return ellip
 
@@ -70,7 +80,9 @@ def plot_cov_ellipse(cov, pos, nstd=2, ax=None, **kwargs):
 def generate_gaussian(mu, sigma, sample_num = 300):
     # mu = np.array([[1, 5]])
     # sigma = np.array([[1, 0.5], [1.5, 3]])
+    # Cholesky 分解是把一个对称正定的矩阵表示成一个下三角矩阵L和其转置的乘积的分解
     R = cholesky(sigma)
+    # 生成服从高斯分布的数据
     s = np.dot(np.random.randn(sample_num, 2), R) + mu
     return s
     # plt.plot(s[:,0], s[:,1], 'o')
@@ -94,14 +106,21 @@ def plot_bivariate_gaussian():
     plt.show()
 
 def plot_single_gaussian():
+    # 定义高斯1的均值和协方差矩阵
     mu = np.array([[1, 5]])
     sigma = np.array([[1, 0.5], [1.5, 3]])
+
+    # 生成服从高斯分布1的数据（300个点）
     s1 = generate_gaussian(mu, sigma)
 
+    # 定义高斯2的均值和协方差矩阵
     mu = np.array([[4, 11]])
     sigma = np.array([[2.4, 3.1], [1.5, 3.7]])
+
+    # 生成服从高斯分布1的数据（300个点）
     s2 = generate_gaussian(mu, sigma)
 
+    # 将两个高斯分布的点连接起来
     X = np.hstack((s1[:,0], s2[:,0]))
     Y = np.hstack((s1[:,1], s2[:,1]))
     X.shape = (600, 1)
@@ -110,10 +129,13 @@ def plot_single_gaussian():
 
     kwrg = {'edgecolor':'k', 'linewidth':0.5}
 
+    # 画点
     plt.plot(s1[:,0], s1[:,1], 'go')
     plt.plot(s2[:,0], s2[:,1], 'go')
+    # 画协方差
     plot_point_cov(points, nstd = 2, alpha = 0.7, color = 'pink', **kwrg)
     plt.show()
 
 if __name__ == '__main__':
-    plot_bivariate_gaussian()
+    # plot_bivariate_gaussian()
+    plot_single_gaussian()
