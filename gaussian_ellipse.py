@@ -61,13 +61,20 @@ def plot_cov_ellipse(cov, pos, nstd=2, ax=None, **kwargs):
 
     # 计算协方差矩阵的特征值和特征向量
     vals, vecs = eigsorted(cov)
+    print(vals)
+    print(vecs)
 
     # 计算坐标轴旋转的角度
     theta = np.degrees(np.arctan2(*vecs[:,0][::-1]))
+    print(*vecs[:,0][::-1])
+    print(np.arctan2(*vecs[:,0][::-1]))
+    print(theta)
 
     # 计算椭圆的长轴和短轴
     # Width and height are "full" widths, not radius
     width, height = 2 * nstd * np.sqrt(vals)
+    print(width)
+    print(height)
 
     # 得到椭圆
     ellip = Ellipse(xy=pos, width=width, height=height, angle=theta, **kwargs)
@@ -90,19 +97,21 @@ def generate_gaussian(mu, sigma, sample_num = 300):
 
 def plot_bivariate_gaussian():
     mu = np.array([[1, 5]])
-    sigma = np.array([[1, 0.5], [1.5, 3]])
+    sigma = np.array([[0.03, -0.0004], [-0.0004, 0.005]])
+    print(sigma)
     s1 = generate_gaussian(mu, sigma)
 
-    mu = np.array([[4, 11]])
-    sigma = np.array([[2.4, 3.1], [1.5, 3.7]])
-    s2 = generate_gaussian(mu, sigma)
+    # mu = np.array([[4, 11]])
+    # sigma = np.array([[2.4, 3.1], [1.5, 3.7]])
+    # s2 = generate_gaussian(mu, sigma)
 
     kwrg = {'edgecolor':'k', 'linewidth':0.5}
 
     plt.plot(s1[:,0], s1[:,1], 'go')
-    plt.plot(s2[:,0], s2[:,1], 'go')
+    # plt.plot(s2[:,0], s2[:,1], 'go')
+
     plot_point_cov(s1, nstd = 2, alpha = 0.7, color = 'pink', **kwrg)
-    plot_point_cov(s2, nstd = 2, alpha = 0.7, color = 'pink', **kwrg)
+    # plot_point_cov(s2, nstd = 2, alpha = 0.7, color = 'pink', **kwrg)
     plt.show()
 
 def plot_single_gaussian():
@@ -137,5 +146,5 @@ def plot_single_gaussian():
     plt.show()
 
 if __name__ == '__main__':
-    # plot_bivariate_gaussian()
-    plot_single_gaussian()
+    plot_bivariate_gaussian()
+    # plot_single_gaussian()
